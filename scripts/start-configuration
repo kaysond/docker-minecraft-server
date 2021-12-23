@@ -146,6 +146,10 @@ if isTrue "${ENABLE_AUTOSTOP}"; then
   "${SCRIPTS:-/}start-autostop"
 fi
 
+if isTrue "${ENABLE_DASHBOARD}"; then
+  ${SCRIPTS:-/}start-dashboard
+fi
+
 if 
   [[ "$RCON_CMDS_STARTUP" ]] ||
   [[ "$RCON_CMDS_ON_CONNECT" ]] ||

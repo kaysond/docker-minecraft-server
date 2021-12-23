@@ -61,17 +61,19 @@ WORKDIR /data
 STOPSIGNAL SIGTERM
 
 # End user MUST set EULA and change RCON_PASSWORD
-ENV TYPE=VANILLA VERSION=LATEST EULA="" UID=1000 GID=1000
+ENV TYPE=VANILLA VERSION=LATEST EULA="" UID=1000 GID=1000 ENABLE_DASHBOARD=false
 
 COPY --chmod=755 scripts/start* /
 COPY --chmod=755 bin/ /usr/local/bin/
 COPY --chmod=755 bin/mc-health /health.sh
 COPY --chmod=644 files/* /image/
 COPY --chmod=755 files/auto /auto
+COPY --chmod=755 files/dashboard /var/www/html
+COPY --chmod=755 scripts/entrypoint /entrypoint
 
 RUN curl -fsSL -o /image/Log4jPatcher.jar https://github.com/CreeperHost/Log4jPatcher/releases/download/v1.0.1/Log4jPatcher-1.0.1.jar
 
-RUN dos2unix /start* /auto/*
+RUN dos2unix /start* /auto/* /var/www/html/* /entrypoint
 
-ENTRYPOINT [ "/start" ]
+ENTRYPOINT [ "/entrypoint" ]
 HEALTHCHECK --start-period=1m --interval=5s --retries=24 CMD mc-health

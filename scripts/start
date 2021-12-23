@@ -47,6 +47,11 @@ if ! isTrue "${SKIP_SUDO:-false}" && [ "$(id -u)" = 0 ]; then
     echo 'hosts: files dns' > /etc/nsswitch.conf
   fi
 
+  # Set necessary permissions for apache2
+  if [[ -n "${ENABLE_DASHBOARD}" ]]; then
+    chown -R "$UID:$GID" /var/log/apache2 /var/run/apache2
+  fi
+
   distro=$(getDistro)
   if [[ $distro == alpine ]]; then
     exec su-exec ${runAsUser}:${runAsGroup} "${SCRIPTS:-/}start-configuration" "$@"
